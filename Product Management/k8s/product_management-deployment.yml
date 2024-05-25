@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-management
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: product-management
+  template:
+    metadata:
+      labels:
+        app: product-management
+    spec:
+      containers:
+        - name: product-management
+          image: product-management-image:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DATABASE_URL
+              value: "mysql://admin:admin@db-product-service:3306/product_management"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-management-service
+spec:
+  selector:
+    app: product-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30125
+  type: NodePort

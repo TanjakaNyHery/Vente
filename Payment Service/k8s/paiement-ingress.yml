@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: paiement-ingress
+  annotations:
+    konghq.com/strip-path: "true"
+    konghq.com/https-redirect-status-code: "302"
+spec:
+  rules:
+    - host: paiement
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: paiement-service
+                port:
+                  number: 80

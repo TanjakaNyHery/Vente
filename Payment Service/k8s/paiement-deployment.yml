@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paiement
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: paiement
+  template:
+    metadata:
+      labels:
+        app: paiement
+    spec:
+      containers:
+        - name: paiement
+          image: paiement-image:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DATABASE_URL
+              value: "mysql://admin:admin@mysql-service:3306/paiement"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paiement-service
+spec:
+  selector:
+    app: paiement
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30732
+  type: NodePort

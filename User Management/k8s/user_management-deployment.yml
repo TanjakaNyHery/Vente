@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-management
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: user-management
+  template:
+    metadata:
+      labels:
+        app: user-management
+    spec:
+      containers:
+        - name: user-management
+          image: user-management-image
+          ports:
+            - containerPort: 80
+          env:
+            - name: DATABASE_URL
+              value: "mysql://admin:admin@db-user-service:3306/user_management"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-management-service
+spec:
+  selector:
+    app: user-management
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30264
+  type: NodePort
